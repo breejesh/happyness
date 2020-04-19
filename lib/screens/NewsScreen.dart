@@ -1,6 +1,6 @@
-import 'package:firstflutter/data/NewsArticle.dart';
-import 'package:firstflutter/widgets/NewsWidget.dart';
-import 'package:firstflutter/widgets/NewsWrapperWidget.dart';
+import 'package:happyness/data/NewsArticle.dart';
+import 'package:happyness/widgets/NewsWidget.dart';
+import 'package:happyness/widgets/NewsWrapperWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 

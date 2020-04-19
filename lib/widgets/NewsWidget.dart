@@ -1,4 +1,4 @@
-import 'package:firstflutter/data/NewsArticle.dart';
+import 'package:happyness/data/NewsArticle.dart';
 import 'package:flutter/material.dart';
 
 class NewsWidget extends StatelessWidget {

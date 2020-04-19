@@ -1,4 +1,4 @@
-import 'package:firstflutter/screens/NewsScreen.dart';
+import 'package:happyness/screens/NewsScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
