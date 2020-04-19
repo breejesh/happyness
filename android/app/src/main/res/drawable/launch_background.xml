@@ -9,5 +9,4 @@
             android:gravity="center"
             android:src="@mipmap/happyness_logo" />
     </item>
-    <item name="android:windowFullscreen">true</item>
 </layer-list>
