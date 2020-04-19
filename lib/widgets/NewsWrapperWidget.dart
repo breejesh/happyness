@@ -1,6 +1,7 @@
 import 'package:happyness/data/NewsArticle.dart';
 import 'package:happyness/widgets/NewsWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class NewsWrapperWidget extends StatelessWidget {
   final NewsArticle newsArticle;
@@ -13,13 +14,10 @@ class NewsWrapperWidget extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       children: <Widget>[
         NewsWidget(newsArticle),
-        Container(
-          color: Theme.of(context).backgroundColor,
-          child: Text(
-            newsArticle.title,
-            style: Theme.of(context).textTheme.subtitle,
-          ),
-        )
+        WebView(
+          initialUrl: newsArticle.sourceUrl,
+          javascriptMode: JavascriptMode.unrestricted,
+        ),
       ],
     );
   }
