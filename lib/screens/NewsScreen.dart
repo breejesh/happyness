@@ -18,11 +18,10 @@ class _NewsScreenState extends State<NewsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: SafeArea(
-          child: Swiper(
+      body: Swiper(
         onIndexChanged: onIndexChanged,
         itemBuilder: (BuildContext context, int index) {
-          return new NewsWrapperWidget(newsArticles[index]);
+      return new NewsWrapperWidget(newsArticles[index]);
         },
         loop: false,
         scrollDirection: Axis.vertical,
@@ -30,7 +29,7 @@ class _NewsScreenState extends State<NewsScreen> {
         itemHeight: MediaQuery.of(context).size.height,
         layout: SwiperLayout.STACK,
         itemCount: newsArticles.length,
-      )),
+      ),
     );
   }
 
