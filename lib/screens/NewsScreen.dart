@@ -1,5 +1,8 @@
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:happyness/data/NewsArticle.dart';
-import 'package:happyness/widgets/NewsWidget.dart';
 import 'package:happyness/widgets/NewsWrapperWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -10,46 +13,24 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     backgroundColor: Colors.black,
-  //     body: SafeArea(
-  //       child: PageView(
-
-  //         // physics: BouncingScrollPhysics(),
-  //         scrollDirection: Axis.vertical,
-  //         children: <Widget>[
-  //           NewsWrapperWidget(newsArticles[0]),
-  //           NewsWrapperWidget(newsArticles[1]),
-  //           NewsWrapperWidget(newsArticles[2]),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-  int _currentArticleNumber = 0;
-  Widget _currentWidget;
-
-  _NewsScreenState() {
-    _currentWidget = NewsWrapperWidget(newsArticles[_currentArticleNumber]);
-  }
-
+  int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: tapGR,
-      child: AnimatedSwitcher(
-        duration: Duration(seconds: 2500),
-        child: _currentWidget,
-      ),
-    );
-  }
-
-  void tapGR() {
-    setState(() {
-      _currentArticleNumber = (++_currentArticleNumber) % 3;
-      _currentWidget = NewsWrapperWidget(newsArticles[_currentArticleNumber]);
-    });
+    return Scaffold(
+        backgroundColor: Colors.black,
+        body: SafeArea(
+            child: Swiper(
+          itemBuilder: (BuildContext context, int index) {
+            _currentIndex = index;
+            log('data: $index');
+            return new NewsWrapperWidget(newsArticles[index]);
+          },
+          loop: false,
+          scrollDirection: Axis.vertical,
+          itemWidth: MediaQuery.of(context).size.width,
+          itemHeight: MediaQuery.of(context).size.height,
+          layout: SwiperLayout.STACK,
+          itemCount: newsArticles.length,
+        )));
   }
 }

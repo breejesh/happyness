@@ -13,9 +13,12 @@ class NewsWrapperWidget extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       children: <Widget>[
         NewsWidget(newsArticle),
-        Text(
-          newsArticle.title,
-          style: Theme.of(context).textTheme.subtitle,
+        Container(
+          color: Theme.of(context).backgroundColor,
+          child: Text(
+            newsArticle.title,
+            style: Theme.of(context).textTheme.subtitle,
+          ),
         )
       ],
     );
