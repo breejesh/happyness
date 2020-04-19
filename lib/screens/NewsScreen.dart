@@ -1,8 +1,11 @@
-import 'package:happyness/data/NewsArticle.dart';
-import 'package:happyness/widgets/NewsWidget.dart';
-import 'package:happyness/widgets/NewsWrapperWidget.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:happyness/data/NewsArticle.dart';
+import 'package:happyness/widgets/NewsWidget.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class NewsScreen extends StatefulWidget {
   @override
@@ -10,46 +13,40 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     backgroundColor: Colors.black,
-  //     body: SafeArea(
-  //       child: PageView(
-
-  //         // physics: BouncingScrollPhysics(),
-  //         scrollDirection: Axis.vertical,
-  //         children: <Widget>[
-  //           NewsWrapperWidget(newsArticles[0]),
-  //           NewsWrapperWidget(newsArticles[1]),
-  //           NewsWrapperWidget(newsArticles[2]),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-  int _currentArticleNumber = 0;
-  Widget _currentWidget;
-
-  _NewsScreenState() {
-    _currentWidget = NewsWrapperWidget(newsArticles[_currentArticleNumber]);
-  }
-
+  int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: tapGR,
-      child: AnimatedSwitcher(
-        duration: Duration(seconds: 2500),
-        child: _currentWidget,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: PageView(
+          scrollDirection: Axis.horizontal,
+          children: <Widget>[
+            Swiper(
+              index: _currentIndex,
+              onIndexChanged: onIndexChanged,
+              itemBuilder: (BuildContext context, int index) {
+                return new NewsWidget(newsArticles[index]);
+              },
+              loop: false,
+              scrollDirection: Axis.vertical,
+              itemWidth: MediaQuery.of(context).size.width,
+              itemHeight: MediaQuery.of(context).size.height,
+              layout: SwiperLayout.STACK,
+              itemCount: newsArticles.length,
+            ),
+            WebView(
+              initialUrl: newsArticles[_currentIndex].sourceUrl,
+              javascriptMode: JavascriptMode.unrestricted,
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  void tapGR() {
-    setState(() {
-      _currentArticleNumber = (++_currentArticleNumber) % 3;
-      _currentWidget = NewsWrapperWidget(newsArticles[_currentArticleNumber]);
-    });
+  void onIndexChanged(int index) {
+    _currentIndex = index;
+    log('data: $index');
   }
 }
