@@ -1,3 +1,4 @@
+import 'package:firstflutter/screens/NewsScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -7,6 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -18,15 +20,35 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
+        backgroundColor: Colors.white,
+        textTheme: TextTheme(
+          title: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          subtitle: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.normal,
+            color: Colors.black,
+          ),
+          display1: TextStyle(
+            fontSize: 14
+          )
+        )
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.blue,
+        backgroundColor: Colors.black,
+      ),
+      home: NewsScreen(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage(this.title, {Key key}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
