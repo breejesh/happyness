@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:happyness/data/NewsArticle.dart';
+import 'package:happyness/misc/PlatformViewVerticalGestureRecognizer.dart';
 import 'package:happyness/widgets/NewsWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -14,9 +16,15 @@ class NewsWrapperWidget extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       children: <Widget>[
         NewsWidget(newsArticle),
-        WebView(
-          initialUrl: newsArticle.sourceUrl,
-          javascriptMode: JavascriptMode.unrestricted,
+        Container(
+          color: Theme.of(context).backgroundColor,
+          child: WebView(
+            javascriptMode: JavascriptMode.unrestricted,
+            initialUrl: newsArticle.sourceUrl,
+            gestureRecognizers: [
+              Factory(() => PlatformViewVerticalGestureRecognizer()),
+            ].toSet(),
+          ),
         ),
       ],
     );
