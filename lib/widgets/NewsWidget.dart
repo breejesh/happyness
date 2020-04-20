@@ -8,12 +8,9 @@ class NewsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
-          borderRadius:
-              BorderRadius.all(Radius.circular(10))), // Remove if you want :P
+      color: Theme.of(context).backgroundColor,
       child: Padding(
-        padding: const EdgeInsets.all(25.0), // Increased it slightly
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           children: <Widget>[
             Expanded(

@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:happyness/data/NewsArticle.dart';
-
-import '../widgets/NewsWrapperWidget.dart';
+import 'package:happyness/widgets/NewsWrapperWidget.dart';
 
 class NewsScreen extends StatefulWidget {
   @override
