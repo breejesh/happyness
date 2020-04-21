@@ -17,6 +17,7 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false, // Fix for keyboard resizing issue - not sure how viable when we want to actually use keyboard
       backgroundColor: Colors.black,
       body: SafeArea(
           child: Swiper(

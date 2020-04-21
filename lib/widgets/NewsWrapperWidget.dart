@@ -22,7 +22,7 @@ class NewsWrapperWidget extends StatelessWidget {
             javascriptMode: JavascriptMode.unrestricted,
             initialUrl: newsArticle.sourceUrl,
             gestureRecognizers: [
-              Factory(() => PlatformViewVerticalGestureRecognizer()),
+              Factory(() => PlatformViewVerticalGestureRecognizer()), // Fix for webview and swiper gesture priority
             ].toSet(),
           ),
         ),
