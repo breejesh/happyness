@@ -6,6 +6,7 @@ import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:happyness/data/NewsArticle.dart';
 import 'package:happyness/widgets/NewsWrapperWidget.dart';
@@ -16,54 +17,112 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
-  static GlobalKey scaffoldKey = new GlobalKey();
+  static GlobalKey keyForScreenshot = new GlobalKey();
+  bool _showFloatingButton = true;
+  bool _showSwiper = true;
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-      key: scaffoldKey,
-      child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.share),
-          onPressed: onShare,
-        ),
-        resizeToAvoidBottomInset:
-            false, // Fix for keyboard resizing issue - not sure how viable when we want to actually use keyboard
-        backgroundColor: Colors.black,
-        body: SafeArea(
-          child: Swiper(
-            index: 3,
-            itemBuilder: (BuildContext context, int index) {
-              return new NewsWrapperWidget(newsArticles[index]);
-            },
-            loop: false,
-            scrollDirection: Axis.vertical,
-            itemWidth: MediaQuery.of(context).size.width,
-            itemHeight: MediaQuery.of(context).size.height,
-            layout: SwiperLayout.STACK,
-            itemCount: newsArticles.length,
+    return Scaffold(
+      floatingActionButton: _showFloatingButton
+          ? SpeedDial(
+              // both default to 16
+
+              animatedIcon: AnimatedIcons.menu_close,
+              animatedIconTheme: IconThemeData(size: 22),
+              // this is ignored if animatedIcon is non null
+              // child: Icon(Icons.add),
+              // If true user is forced to close dial manually
+              // by tapping main button and overlay is not rendered.
+              closeManually: false,
+              curve: Curves.bounceIn,
+              overlayColor: Colors.black,
+              overlayOpacity: 0.4,
+              onOpen: () => print('OPENING DIAL'),
+              onClose: () => print('DIAL CLOSED'),
+              tooltip: 'Speed Dial',
+              heroTag: 'speed-dial-hero-tag',
+              elevation: 8.0,
+              shape: CircleBorder(),
+              children: [
+                SpeedDialChild(
+                    child: Icon(Icons.share),
+                    backgroundColor: Colors.green,
+                    label: 'Share',
+                    labelStyle: Theme.of(context).textTheme.subtitle,
+                    onTap: () => takeScreenShotAndShare()),
+                SpeedDialChild(
+                  child: Icon(Icons.arrow_upward),
+                  backgroundColor: Colors.orange,
+                  label: 'Go to Top',
+                  labelStyle: Theme.of(context).textTheme.subtitle,
+                  onTap: () => redraw(),
+                )
+              ],
+            )
+          : null,
+      resizeToAvoidBottomInset:
+          false, // Fix for keyboard resizing issue - not sure how viable when we want to actually use keyboard
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Container(
+          color: Theme.of(context).backgroundColor,
+          child: RepaintBoundary(
+            // Moved here so screenshot does not take floating button
+            key: keyForScreenshot,
+            child: _showSwiper
+                ? Swiper(
+                    itemBuilder: (BuildContext context, int index) {
+                      return new NewsWrapperWidget(
+                          newsArticles[index], toggleFloatingButton);
+                    },
+                    loop: false,
+                    scrollDirection: Axis.vertical,
+                    itemWidth: MediaQuery.of(context).size.width,
+                    itemHeight: MediaQuery.of(context).size.height,
+                    layout: SwiperLayout.STACK,
+                    itemCount: newsArticles.length,
+                  )
+                : null,
           ),
         ),
       ),
     );
   }
 
-  Future<void> onShare() async {
-    log('onShare: ');
-    await takeScreenShotAndShare();
+  void redraw() {
+    // Hack.. find something better
+    setState(() {
+      log('Hiding Swiper');
+      _showSwiper = !_showSwiper;
+      // showSomeAnimation
+      // Use some callback instead of delay
+      Future.delayed(const Duration(milliseconds: 20), () {
+        setState(() {
+          log('Showing Swiper');
+          _showSwiper = !_showSwiper;
+        });
+      });
+    });
+  }
+
+  void toggleFloatingButton() {
+    setState(() {
+      _showFloatingButton = !_showFloatingButton;
+    });
   }
 
   Future<void> takeScreenShotAndShare() async {
     try {
       RenderRepaintBoundary boundary =
-          scaffoldKey.currentContext.findRenderObject();
+          keyForScreenshot.currentContext.findRenderObject();
       ui.Image image = await boundary.toImage();
       ByteData byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData.buffer.asUint8List();
-      await Share.file('Share a screenshot of Happyness!', 'goodnews.png',
+      await Share.file('Share a screenshot of Happyness!', 'happynews.png',
           pngBytes, 'image/png',
-          text: 'Download Happyness for more');
+          text: 'Download Happyness App for more: https://www.google.com');
     } catch (e) {
       print('error: $e');
     }
