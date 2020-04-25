@@ -33,7 +33,7 @@ class NewsWidget extends StatelessWidget {
                     fit: BoxFit.cover,
                     image: this.newsArticle.imageUrl != null
                         ? NetworkImage(this.newsArticle.imageUrl)
-                        : AssetImage(this.newsArticle.imageAssetUri),
+                        : AssetImage('assets/images/AltoAdventure.png'),
                   ),
                 ),
               ),
