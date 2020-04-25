@@ -8,6 +8,9 @@ class SigninScreen extends StatelessWidget {
     return StreamBuilder(
         stream: authenticationService.user,
         builder: (context, snapshot) {
+          // if(snapshot.hasData) {
+          //   authenticationService.signOut();
+          // }
           if (snapshot.hasData) {
             return NewsScreen();
           } else {
