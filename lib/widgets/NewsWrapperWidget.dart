@@ -7,12 +7,14 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class NewsWrapperWidget extends StatelessWidget {
   final NewsArticle newsArticle;
-
-  const NewsWrapperWidget(this.newsArticle, {Key key}) : super(key: key);
+  final VoidCallback toggleFloatingButton;
+  NewsWrapperWidget(this.newsArticle, this.toggleFloatingButton, {Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return PageView(
+      onPageChanged: (int pageNum) => toggleFloatingButton(),
       scrollDirection: Axis.horizontal,
       children: <Widget>[
         NewsWidget(newsArticle),
@@ -22,7 +24,8 @@ class NewsWrapperWidget extends StatelessWidget {
             javascriptMode: JavascriptMode.unrestricted,
             initialUrl: newsArticle.sourceUrl,
             gestureRecognizers: [
-              Factory(() => PlatformViewVerticalGestureRecognizer()),
+              Factory(() =>
+                  PlatformViewVerticalGestureRecognizer()), // Fix for webview and swiper gesture priority
             ].toSet(),
           ),
         ),

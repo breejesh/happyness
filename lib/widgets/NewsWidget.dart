@@ -15,9 +15,12 @@ class NewsWidget extends StatelessWidget {
           children: <Widget>[
             Expanded(
               flex: 2,
-              child: Text(
-                this.newsArticle.title,
-                style: Theme.of(context).textTheme.title,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  this.newsArticle.title,
+                  style: Theme.of(context).textTheme.title,
+                ),
               ),
             ),
             Spacer(),
@@ -38,7 +41,7 @@ class NewsWidget extends StatelessWidget {
               flex: 9,
               child: Text(
                 this.newsArticle.body,
-                style: Theme.of(context).textTheme.subtitle,
+                style: Theme.of(context).textTheme.subhead,
                 textAlign: TextAlign.justify,
               ),
             ),
@@ -50,12 +53,12 @@ class NewsWidget extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     'Swipe left to view source',
-                    style: Theme.of(context).textTheme.display1,
+                    style: Theme.of(context).textTheme.caption,
                     textAlign: TextAlign.left,
                   ),
                   Text(
                     'Swipe up to view next news',
-                    style: Theme.of(context).textTheme.display1,
+                    style: Theme.of(context).textTheme.caption,
                   ),
                 ],
               ),
