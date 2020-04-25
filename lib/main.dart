@@ -1,11 +1,14 @@
+import 'package:happyness/screens/SigninScreen.dart';
 import 'package:flutter/services.dart';
 import 'package:happyness/screens/NewsScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
+
+
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     // Force portrait mode
@@ -22,10 +25,10 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.white,
           textTheme: Typography.blackCupertino), // Using factory themes
       darkTheme: ThemeData(
-          primarySwatch: Colors.blue,
-          backgroundColor: Colors.black,
-          textTheme: Typography.whiteCupertino), // Using factory themes
-      home: NewsScreen(),
+        primarySwatch: Colors.blue,
+        backgroundColor: Colors.black,
+      ),
+      home: SigninScreen(),
     );
   }
 }
