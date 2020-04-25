@@ -49,7 +49,11 @@ class _NewsScreenState extends State<NewsScreen> {
                     child: Icon(Icons.share),
                     backgroundColor: Colors.green,
                     label: 'Share',
-                    labelStyle: Theme.of(context).textTheme.subtitle,
+                    labelStyle: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
                     onTap: () => takeScreenShotAndShare()),
                 SpeedDialChild(
                   child: Icon(Icons.arrow_upward),
