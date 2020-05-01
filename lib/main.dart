@@ -1,6 +1,5 @@
 import 'package:happyness/screens/SigninScreen.dart';
 import 'package:flutter/services.dart';
-import 'package:happyness/screens/NewsScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());

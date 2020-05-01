@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:happyness/data/NewsArticle.dart';
 import 'package:happyness/misc/PlatformViewVerticalGestureRecognizer.dart';
 import 'package:happyness/widgets/NewsWidget.dart';
-import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class NewsWrapperWidget extends StatelessWidget {
