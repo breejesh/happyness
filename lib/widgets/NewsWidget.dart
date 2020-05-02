@@ -19,7 +19,7 @@ class NewsWidget extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   this.newsArticle.title,
-                  style: Theme.of(context).textTheme.title,
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
             ),
