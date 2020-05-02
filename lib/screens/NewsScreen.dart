@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -19,9 +20,34 @@ class NewsScreen extends StatefulWidget {
 
 class _NewsScreenState extends State<NewsScreen> {
   static GlobalKey keyForScreenshot = new GlobalKey();
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   bool _showFloatingButton = true;
   bool _showSwiper = true;
   List<NewsArticle> newsArticles = [];
+
+  @override
+  void initState() {
+    super.initState();
+    firebaseCloudMessagingListeners();
+  }
+
+  void firebaseCloudMessagingListeners() {
+    _firebaseMessaging.getToken().then((token) {
+      print(token);
+    });
+
+    _firebaseMessaging.configure(
+    onMessage: (Map<String, dynamic> message) async {
+      print('on message $message');
+    },
+    onResume: (Map<String, dynamic> message) async {
+      print('on resume $message');
+    },
+    onLaunch: (Map<String, dynamic> message) async {
+      print('on launch $message');
+    },
+  );
+  }
 
   @override
   Widget build(BuildContext context) {
