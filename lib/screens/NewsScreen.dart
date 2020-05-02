@@ -105,15 +105,15 @@ class _NewsScreenState extends State<NewsScreen> {
   void initState() {
     super.initState();
     this.getArticlesFromFirestore().then((data) => setState(() {
-      this.newsArticles = data;
+          this.newsArticles = data;
           log(this.newsArticles.toString());
         }));
   }
 
-  Future getArticlesFromFirestore() async {
+  Future<List<NewsArticle>> getArticlesFromFirestore() async {
     Firestore _db = Firestore.instance;
     List<NewsArticle> news = [];
-    _db.collection('news').getDocuments().then(
+    await _db.collection('news').getDocuments().then(
         (QuerySnapshot snapshot) => snapshot.documents.forEach((newsItem) {
               NewsArticle article = new NewsArticle(
                   newsItem.data['title'],
@@ -121,9 +121,9 @@ class _NewsScreenState extends State<NewsScreen> {
                   newsItem.data['cover_image_url'],
                   'assets/images/AltoAdventure.png',
                   newsItem.data['source_url']);
-              news.add(article);
+              newsArticles.add(article);
             }));
-            return news;
+    return news;
   }
 
   void redraw() {
