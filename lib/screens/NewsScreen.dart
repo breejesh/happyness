@@ -61,7 +61,7 @@ class _NewsScreenState extends State<NewsScreen> {
               // If true user is forced to close dial manually
               // by tapping main button and overlay is not rendered.
               closeManually: false,
-              curve: Curves.bounceIn,
+              curve: Curves.easeIn,
               overlayColor: Colors.black,
               overlayOpacity: 0.4,
               onOpen: () => print('OPENING DIAL'),
