@@ -43,7 +43,7 @@ class NewsWidget extends StatelessWidget {
               flex: 9,
               child: Text(
                 this.newsArticle.body,
-                style: Theme.of(context).textTheme.subhead,
+                style: Theme.of(context).textTheme.subtitle1,
                 textAlign: TextAlign.justify,
               ),
             ),

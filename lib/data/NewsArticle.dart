@@ -2,10 +2,9 @@ class NewsArticle {
   final String title;
   final String body;
   final String imageUrl;
-  final String imageAssetUri;
   final String sourceUrl;
 
-  NewsArticle(this.title, this.body, this.imageUrl, this.imageAssetUri, this.sourceUrl);
+  NewsArticle(this.title, this.body, this.imageUrl, this.sourceUrl);
 }
 
 // final List<NewsArticle> newsArticles = [

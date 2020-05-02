@@ -184,7 +184,6 @@ class _NewsScreenState extends State<NewsScreen> {
                   newsItem.data['title'],
                   newsItem.data['summary'],
                   newsItem.data['cover_image_url'],
-                  'assets/images/AltoAdventure.png',
                   newsItem.data['source_url']);
               newsArticles.add(article);
             }));
