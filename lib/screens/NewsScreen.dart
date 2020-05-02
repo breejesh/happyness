@@ -25,106 +25,94 @@ class _NewsScreenState extends State<NewsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('news').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Text('Loading');
-          } else {
-            snapshot.data.documents.forEach((newsItem) =>
-              newsArticles.add(NewsArticle(
-                  newsItem.data['title'],
-                  newsItem.data['summary'],
-                  newsItem.data['cover_image_url'],
-                  'assets/images/AltoAdventure.png',
-                  newsItem.data['source_url']))
-            );
-            log('$newsArticles.length');
-            return Scaffold(
-              floatingActionButton: _showFloatingButton
-                  ? SpeedDial(
-                      // both default to 16
+    if (newsArticles.length == 0) {
+      getArticlesFromFirestore();
+      return Text('Loading....');
+    } else {
+      return Scaffold(
+        floatingActionButton: _showFloatingButton
+            ? SpeedDial(
+                // both default to 16
 
-                      animatedIcon: AnimatedIcons.menu_close,
-                      animatedIconTheme: IconThemeData(size: 22),
-                      // this is ignored if animatedIcon is non null
-                      // child: Icon(Icons.add),
-                      // If true user is forced to close dial manually
-                      // by tapping main button and overlay is not rendered.
-                      closeManually: false,
-                      curve: Curves.bounceIn,
-                      overlayColor: Colors.black,
-                      overlayOpacity: 0.4,
-                      onOpen: () => print('OPENING DIAL'),
-                      onClose: () => print('DIAL CLOSED'),
-                      tooltip: 'Speed Dial',
-                      heroTag: 'speed-dial-hero-tag',
-                      elevation: 8.0,
-                      shape: CircleBorder(),
-                      children: [
-                        SpeedDialChild(
-                            child: Icon(Icons.share),
-                            backgroundColor: Colors.green,
-                            label: 'Share',
-                            labelStyle: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
-                            ),
-                            onTap: () => takeScreenShotAndShare()),
-                        SpeedDialChild(
-                          child: Icon(Icons.arrow_upward),
-                          backgroundColor: Colors.orange,
-                          label: 'Go to Top',
-                          labelStyle: Theme.of(context).textTheme.subtitle,
-                          onTap: () => redraw(),
-                        )
-                      ],
+                animatedIcon: AnimatedIcons.menu_close,
+                animatedIconTheme: IconThemeData(size: 22),
+                // this is ignored if animatedIcon is non null
+                // child: Icon(Icons.add),
+                // If true user is forced to close dial manually
+                // by tapping main button and overlay is not rendered.
+                closeManually: false,
+                curve: Curves.bounceIn,
+                overlayColor: Colors.black,
+                overlayOpacity: 0.4,
+                onOpen: () => print('OPENING DIAL'),
+                onClose: () => print('DIAL CLOSED'),
+                tooltip: 'Speed Dial',
+                heroTag: 'speed-dial-hero-tag',
+                elevation: 8.0,
+                shape: CircleBorder(),
+                children: [
+                  SpeedDialChild(
+                      child: Icon(Icons.share),
+                      backgroundColor: Colors.green,
+                      label: 'Share',
+                      labelStyle: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                      onTap: () => takeScreenShotAndShare()),
+                  SpeedDialChild(
+                    child: Icon(Icons.arrow_upward),
+                    backgroundColor: Colors.orange,
+                    label: 'Go to Top',
+                    labelStyle: Theme.of(context).textTheme.subtitle,
+                    onTap: () => redraw(),
+                  )
+                ],
+              )
+            : null,
+        resizeToAvoidBottomInset:
+            false, // Fix for keyboard resizing issue - not sure how viable when we want to actually use keyboard
+        backgroundColor: Colors.black,
+        body: SafeArea(
+          child: Container(
+            color: Theme.of(context).backgroundColor,
+            child: RepaintBoundary(
+              // Moved here so screenshot does not take floating button
+              key: keyForScreenshot,
+              child: _showSwiper
+                  ? Swiper(
+                      itemBuilder: (BuildContext context, int index) {
+                        return new NewsWrapperWidget(
+                            newsArticles[index], toggleFloatingButton);
+                      },
+                      loop: false,
+                      scrollDirection: Axis.vertical,
+                      itemWidth: MediaQuery.of(context).size.width,
+                      itemHeight: MediaQuery.of(context).size.height,
+                      layout: SwiperLayout.STACK,
+                      itemCount: newsArticles.length,
                     )
                   : null,
-              resizeToAvoidBottomInset:
-                  false, // Fix for keyboard resizing issue - not sure how viable when we want to actually use keyboard
-              backgroundColor: Colors.black,
-              body: SafeArea(
-                child: Container(
-                  color: Theme.of(context).backgroundColor,
-                  child: RepaintBoundary(
-                    // Moved here so screenshot does not take floating button
-                    key: keyForScreenshot,
-                    child: _showSwiper
-                        ? Swiper(
-                            itemBuilder: (BuildContext context, int index) {
-                              return new NewsWrapperWidget(
-                                  newsArticles[index], toggleFloatingButton);
-                            },
-                            loop: false,
-                            scrollDirection: Axis.vertical,
-                            itemWidth: MediaQuery.of(context).size.width,
-                            itemHeight: MediaQuery.of(context).size.height,
-                            layout: SwiperLayout.STACK,
-                            itemCount: newsArticles.length,
-                          )
-                        : null,
-                  ),
-                ),
-              ),
-            );
-          }
-        });
+            ),
+          ),
+        ),
+      );
+    }
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getNews();
-  // }
-
-  void getNews() async {
-    await getArticlesFromFirestore();
+  @override
+  void initState() {
+    super.initState();
+    this.getArticlesFromFirestore().then((data) => setState(() {
+      this.newsArticles = data;
+          log(this.newsArticles.toString());
+        }));
   }
 
-  Future<void> getArticlesFromFirestore() async {
+  Future getArticlesFromFirestore() async {
     Firestore _db = Firestore.instance;
+    List<NewsArticle> news = [];
     _db.collection('news').getDocuments().then(
         (QuerySnapshot snapshot) => snapshot.documents.forEach((newsItem) {
               NewsArticle article = new NewsArticle(
@@ -133,8 +121,9 @@ class _NewsScreenState extends State<NewsScreen> {
                   newsItem.data['cover_image_url'],
                   'assets/images/AltoAdventure.png',
                   newsItem.data['source_url']);
-              newsArticles.add(article);
+              news.add(article);
             }));
+            return news;
   }
 
   void redraw() {
