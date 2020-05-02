@@ -70,7 +70,7 @@ class _NewsScreenState extends State<NewsScreen> {
                 // If true user is forced to close dial manually
                 // by tapping main button and overlay is not rendered.
                 closeManually: false,
-                curve: Curves.bounceIn,
+                curve: Curves.easeIn,
                 overlayColor: Colors.black,
                 overlayOpacity: 0.4,
                 onOpen: () => print('OPENING DIAL'),
@@ -94,7 +94,11 @@ class _NewsScreenState extends State<NewsScreen> {
                     child: Icon(Icons.arrow_upward),
                     backgroundColor: Colors.orange,
                     label: 'Go to Top',
-                    labelStyle: Theme.of(context).textTheme.subtitle,
+                    labelStyle: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
                     onTap: () => redraw(),
                   )
                 ],
@@ -169,22 +173,6 @@ class _NewsScreenState extends State<NewsScreen> {
     );
   }
 
-  Future<List<NewsArticle>> getArticlesFromFirestore() async {
-    Firestore _db = Firestore.instance;
-    List<NewsArticle> news = [];
-    await _db.collection('news').getDocuments().then(
-        (QuerySnapshot snapshot) => snapshot.documents.forEach((newsItem) {
-              NewsArticle article = new NewsArticle(
-                  newsItem.data['title'],
-                  newsItem.data['summary'],
-                  newsItem.data['cover_image_url'],
-                  'assets/images/AltoAdventure.png',
-                  newsItem.data['source_url']);
-              newsArticles.add(article);
-            }));
-    return news;
-  }
-
   void redraw() {
     // Hack.. find something better
     setState(() {
@@ -221,5 +209,21 @@ class _NewsScreenState extends State<NewsScreen> {
     } catch (e) {
       print('error: $e');
     }
+  }
+
+  Future<List<NewsArticle>> getArticlesFromFirestore() async {
+    Firestore _db = Firestore.instance;
+    List<NewsArticle> news = [];
+    await _db.collection('news').getDocuments().then(
+        (QuerySnapshot snapshot) => snapshot.documents.forEach((newsItem) {
+              NewsArticle article = new NewsArticle(
+                  newsItem.data['title'],
+                  newsItem.data['summary'],
+                  newsItem.data['cover_image_url'],
+                  'assets/images/AltoAdventure.png',
+                  newsItem.data['source_url']);
+              newsArticles.add(article);
+            }));
+    return news;
   }
 }

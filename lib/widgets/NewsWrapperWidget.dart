@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:happyness/data/NewsArticle.dart';
@@ -13,23 +16,107 @@ class NewsWrapperWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PageController _pageController = PageController();
+    final Completer<WebViewController> __webController =
+        Completer<WebViewController>();
+    Future<bool> _onBack() async {
+      log('Showing _onBack');
+      _pageController.jumpToPage(0);
+      return false;
+    }
+
     return PageView(
+      controller: _pageController,
       onPageChanged: (int pageNum) => toggleFloatingButton(),
       scrollDirection: Axis.horizontal,
       children: <Widget>[
         NewsWidget(newsArticle),
         Container(
           color: Theme.of(context).backgroundColor,
-          child: WebView(
-            javascriptMode: JavascriptMode.unrestricted,
-            initialUrl: newsArticle.sourceUrl,
-            gestureRecognizers: [
-              Factory(() =>
-                  PlatformViewVerticalGestureRecognizer()), // Fix for webview and swiper gesture priority
-            ].toSet(),
+          child: Column(
+            children: [
+              NavigationControls(__webController.future, _pageController,
+                  newsArticle.sourceUrl),
+              Expanded(
+                child: WillPopScope(
+                  onWillPop: _onBack,
+                  child: WebView(
+                    javascriptMode: JavascriptMode.unrestricted,
+                    initialUrl: newsArticle.sourceUrl,
+                    onWebViewCreated: (WebViewController webViewController) {
+                      __webController.complete(webViewController);
+                    },
+                    gestureRecognizers: [
+                      Factory(() =>
+                          PlatformViewVerticalGestureRecognizer()), // Fix for webview and swiper gesture priority
+                    ].toSet(),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
+    );
+  }
+}
+
+class NavigationControls extends StatelessWidget {
+  NavigationControls(
+      this._webViewControllerFuture, this._pageController, this.sourceURL)
+      : assert(_webViewControllerFuture != null);
+
+  final Future<WebViewController> _webViewControllerFuture;
+  final PageController _pageController;
+  final String sourceURL;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<WebViewController>(
+      future: _webViewControllerFuture,
+      builder:
+          (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
+        final WebViewController controller = snapshot.data;
+        return Container(
+          color: Theme.of(context).backgroundColor,
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () async {
+                  if (await controller.canGoBack()) {
+                    await controller.goBack();
+                  } else {
+                    _pageController.jumpToPage(0);
+                    return;
+                  }
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_forward_ios),
+                onPressed: () async {
+                  if (await controller.canGoForward()) {
+                    await controller.goForward();
+                  } else {
+                    Scaffold.of(context).showSnackBar(
+                      const SnackBar(content: Text("No forward history item")),
+                    );
+                    return;
+                  }
+                },
+              ),
+              Text(sourceURL.split("://")[1].split("/")[0], style: Theme.of(context).textTheme.subtitle2),
+              Spacer(),
+              IconButton(
+                icon: const Icon(Icons.replay),
+                onPressed: () {
+                  controller.reload();
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
