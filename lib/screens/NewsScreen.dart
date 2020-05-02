@@ -160,6 +160,8 @@ class _NewsScreenState extends State<NewsScreen> {
       print(token);
     });
 
+    _firebaseMessaging.subscribeToTopic("new_news_notification");
+
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
