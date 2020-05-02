@@ -12,6 +12,9 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:happyness/data/NewsArticle.dart';
 import 'package:happyness/widgets/NewsWrapperWidget.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'package:loading/indicator/line_scale_indicator.dart';
+import 'package:loading/loading.dart';
 
 class NewsScreen extends StatefulWidget {
   @override
@@ -28,8 +31,32 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   Widget build(BuildContext context) {
     if (newsArticles.length == 0) {
-      getArticlesFromFirestore();
-      return Text('Loading....');
+      return Scaffold(
+        body: Container(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image(
+                    image: AssetImage('assets/images/happyness_logo.png'),
+                    height: 160,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Loading(
+                    indicator: LineScaleIndicator(),
+                    size: 80,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     } else {
       return Scaffold(
         floatingActionButton: _showFloatingButton
@@ -113,10 +140,19 @@ class _NewsScreenState extends State<NewsScreen> {
   void initState() {
     super.initState();
     firebaseCloudMessagingListeners();
-    this.getArticlesFromFirestore().then((data) => setState(() {
-          this.newsArticles = data;
-          log(this.newsArticles.toString());
+    // this.getArticlesFromFirestore().then((data) => setState(() {
+    //       this.newsArticles = data;
+    //       log(this.newsArticles.toString());
+    //     }));
+
+    endLoadingAfterDelay(3).then((_) => setState(() {
+          this.newsArticles = staticNewsArticles;
         }));
+  }
+
+  Future endLoadingAfterDelay(int delayInSeconds) async {
+    // Imagine that this function is more complex and slow
+    return Future.delayed(Duration(seconds: delayInSeconds), () => {});
   }
 
   void firebaseCloudMessagingListeners() {
