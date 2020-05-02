@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
-
-
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     // Force portrait mode
@@ -27,6 +24,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         primarySwatch: Colors.blue,
         backgroundColor: Colors.black,
+        textTheme: Typography.whiteCupertino,
       ),
       home: NewsScreen(),
     );

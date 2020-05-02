@@ -12,7 +12,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:happyness/data/NewsArticle.dart';
 import 'package:happyness/widgets/NewsWrapperWidget.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/indicator/line_scale_indicator.dart';
 import 'package:loading/loading.dart';
 
@@ -70,7 +69,7 @@ class _NewsScreenState extends State<NewsScreen> {
                 // If true user is forced to close dial manually
                 // by tapping main button and overlay is not rendered.
                 closeManually: false,
-                curve: Curves.easeIn,
+                curve: Curves.linear,
                 overlayColor: Colors.black,
                 overlayOpacity: 0.4,
                 onOpen: () => print('OPENING DIAL'),
@@ -140,14 +139,14 @@ class _NewsScreenState extends State<NewsScreen> {
   void initState() {
     super.initState();
     firebaseCloudMessagingListeners();
-    // this.getArticlesFromFirestore().then((data) => setState(() {
-    //       this.newsArticles = data;
-    //       log(this.newsArticles.toString());
-    //     }));
-
-    endLoadingAfterDelay(3).then((_) => setState(() {
-          this.newsArticles = staticNewsArticles;
+    this.getArticlesFromFirestore().then((data) => setState(() {
+          this.newsArticles = data;
+          log(this.newsArticles.toString());
         }));
+
+    // endLoadingAfterDelay(3).then((_) => setState(() {
+    //       this.newsArticles = staticNewsArticles;
+    //     }));
   }
 
   Future endLoadingAfterDelay(int delayInSeconds) async {
@@ -223,7 +222,7 @@ class _NewsScreenState extends State<NewsScreen> {
                   newsItem.data['summary'],
                   newsItem.data['cover_image_url'],
                   newsItem.data['source_url']);
-              newsArticles.add(article);
+              news.add(article);
             }));
     return news;
   }
