@@ -13,8 +13,8 @@ class NewsWidget extends StatelessWidget {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: <Widget>[
-            Expanded(
-              flex: 2,
+            Padding(
+              padding: const EdgeInsets.all(5.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
