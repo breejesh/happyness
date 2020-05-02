@@ -20,13 +20,14 @@ class MyApp extends StatelessWidget {
           // This is the theme of your application.
           primarySwatch: Colors.blue,
           backgroundColor: Colors.white,
-          textTheme: Typography.blackCupertino), // Using factory themes
+          textTheme: Typography.blackCupertino,
+          secondaryHeaderColor: Colors.black12), // Using factory themes
       darkTheme: ThemeData(
-        primarySwatch: Colors.blue,
-        backgroundColor: Colors.black,
-        textTheme: Typography.whiteCupertino,
-      ),
-      home: NewsScreen(),
+          primarySwatch: Colors.blue,
+          backgroundColor: Colors.black,
+          textTheme: Typography.whiteCupertino,
+          secondaryHeaderColor: Colors.white12),
+      home: SigninScreen(),
     );
   }
 }

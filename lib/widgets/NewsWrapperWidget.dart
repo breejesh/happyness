@@ -31,30 +31,27 @@ class NewsWrapperWidget extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       children: <Widget>[
         NewsWidget(newsArticle),
-        Container(
-          color: Theme.of(context).backgroundColor,
-          child: Column(
-            children: [
-              NavigationControls(__webController.future, _pageController,
-                  newsArticle.sourceUrl),
-              Expanded(
-                child: WillPopScope(
-                  onWillPop: _onBack,
-                  child: WebView(
-                    javascriptMode: JavascriptMode.unrestricted,
-                    initialUrl: newsArticle.sourceUrl,
-                    onWebViewCreated: (WebViewController webViewController) {
-                      __webController.complete(webViewController);
-                    },
-                    gestureRecognizers: [
-                      Factory(() =>
-                          PlatformViewVerticalGestureRecognizer()), // Fix for webview and swiper gesture priority
-                    ].toSet(),
-                  ),
+        Column(
+          children: [
+            NavigationControls(__webController.future, _pageController,
+                newsArticle.sourceUrl),
+            Expanded(
+              child: WillPopScope(
+                onWillPop: _onBack,
+                child: WebView(
+                  javascriptMode: JavascriptMode.unrestricted,
+                  initialUrl: newsArticle.sourceUrl,
+                  onWebViewCreated: (WebViewController webViewController) {
+                    __webController.complete(webViewController);
+                  },
+                  gestureRecognizers: [
+                    Factory(() =>
+                        PlatformViewVerticalGestureRecognizer()), // Fix for webview and swiper gesture priority
+                  ].toSet(),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );
@@ -82,6 +79,7 @@ class NavigationControls extends StatelessWidget {
           child: Row(
             children: <Widget>[
               IconButton(
+                color: Theme.of(context).textTheme.button.color,
                 icon: const Icon(Icons.arrow_back_ios),
                 onPressed: () async {
                   if (await controller.canGoBack()) {
@@ -93,6 +91,7 @@ class NavigationControls extends StatelessWidget {
                 },
               ),
               IconButton(
+                color: Theme.of(context).textTheme.button.color,
                 icon: const Icon(Icons.arrow_forward_ios),
                 onPressed: () async {
                   if (await controller.canGoForward()) {
@@ -105,9 +104,19 @@ class NavigationControls extends StatelessWidget {
                   }
                 },
               ),
-              Text(sourceURL.split("://")[1].split("/")[0], style: Theme.of(context).textTheme.subtitle2),
-              Spacer(),
+              Expanded(
+                child: Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).secondaryHeaderColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(sourceURL.split("://")[1].split("/")[0],
+                          style: Theme.of(context).textTheme.subtitle2),
+                    )),
+              ),
               IconButton(
+                color: Theme.of(context).textTheme.button.color,
                 icon: const Icon(Icons.replay),
                 onPressed: () {
                   controller.reload();
