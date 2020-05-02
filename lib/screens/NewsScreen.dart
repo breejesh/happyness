@@ -26,30 +26,6 @@ class _NewsScreenState extends State<NewsScreen> {
   List<NewsArticle> newsArticles = [];
 
   @override
-  void initState() {
-    super.initState();
-    firebaseCloudMessagingListeners();
-  }
-
-  void firebaseCloudMessagingListeners() {
-    _firebaseMessaging.getToken().then((token) {
-      print(token);
-    });
-
-    _firebaseMessaging.configure(
-    onMessage: (Map<String, dynamic> message) async {
-      print('on message $message');
-    },
-    onResume: (Map<String, dynamic> message) async {
-      print('on resume $message');
-    },
-    onLaunch: (Map<String, dynamic> message) async {
-      print('on launch $message');
-    },
-  );
-  }
-
-  @override
   Widget build(BuildContext context) {
     if (newsArticles.length == 0) {
       getArticlesFromFirestore();
@@ -110,7 +86,9 @@ class _NewsScreenState extends State<NewsScreen> {
                   ? Swiper(
                       itemBuilder: (BuildContext context, int index) {
                         return new NewsWrapperWidget(
-                            newsArticles[index], toggleFloatingButton);
+                          newsArticles[index],
+                          toggleFloatingButton,
+                        );
                       },
                       loop: false,
                       scrollDirection: Axis.vertical,
@@ -130,10 +108,29 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   void initState() {
     super.initState();
+    firebaseCloudMessagingListeners();
     this.getArticlesFromFirestore().then((data) => setState(() {
           this.newsArticles = data;
           log(this.newsArticles.toString());
         }));
+  }
+
+  void firebaseCloudMessagingListeners() {
+    _firebaseMessaging.getToken().then((token) {
+      print(token);
+    });
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
   }
 
   Future<List<NewsArticle>> getArticlesFromFirestore() async {
