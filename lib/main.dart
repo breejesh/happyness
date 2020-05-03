@@ -1,4 +1,3 @@
-import 'package:happyness/screens/NewsScreen.dart';
 import 'package:happyness/screens/SigninScreen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';

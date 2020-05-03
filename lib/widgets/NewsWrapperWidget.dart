@@ -8,6 +8,8 @@ import 'package:happyness/misc/PlatformViewVerticalGestureRecognizer.dart';
 import 'package:happyness/widgets/NewsWidget.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+WebViewController webControllerGlobal;
+
 class NewsWrapperWidget extends StatelessWidget {
   final NewsArticle newsArticle;
   final VoidCallback toggleFloatingButton;
@@ -17,11 +19,18 @@ class NewsWrapperWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PageController _pageController = PageController();
-    final Completer<WebViewController> __webController =
+    final Completer<WebViewController> _webController =
         Completer<WebViewController>();
+
     Future<bool> _onBack() async {
-      log('Showing _onBack');
-      _pageController.jumpToPage(0);
+      log('_onBack');
+      if (await webControllerGlobal.canGoBack()) {
+        print("webControllerGlobal goback");
+        webControllerGlobal.goBack();
+      } else {
+        print("_pageController goback");
+        _pageController.jumpToPage(0);
+      }
       return false;
     }
 
@@ -31,27 +40,30 @@ class NewsWrapperWidget extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       children: <Widget>[
         NewsWidget(newsArticle),
-        Column(
-          children: [
-            NavigationControls(__webController.future, _pageController,
-                newsArticle.sourceUrl),
-            Expanded(
-              child: WillPopScope(
-                onWillPop: _onBack,
-                child: WebView(
-                  javascriptMode: JavascriptMode.unrestricted,
-                  initialUrl: newsArticle.sourceUrl,
-                  onWebViewCreated: (WebViewController webViewController) {
-                    __webController.complete(webViewController);
-                  },
-                  gestureRecognizers: [
-                    Factory(() =>
-                        PlatformViewVerticalGestureRecognizer()), // Fix for webview and swiper gesture priority
-                  ].toSet(),
+        Container(
+          color: Theme.of(context).backgroundColor,
+          child: Column(
+            children: [
+              NavigationControls(_webController.future, _pageController,
+                  newsArticle.sourceUrl),
+              Expanded(
+                child: WillPopScope(
+                  onWillPop: _onBack,
+                  child: WebView(
+                    javascriptMode: JavascriptMode.unrestricted,
+                    initialUrl: newsArticle.sourceUrl,
+                    onWebViewCreated: (WebViewController webViewController) {
+                      _webController.complete(webViewController);
+                    },
+                    gestureRecognizers: [
+                      Factory(() =>
+                          PlatformViewVerticalGestureRecognizer()), // Fix for webview and swiper gesture priority
+                    ].toSet(),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -74,6 +86,7 @@ class NavigationControls extends StatelessWidget {
       builder:
           (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
         final WebViewController controller = snapshot.data;
+        webControllerGlobal = controller;
         return Container(
           color: Theme.of(context).backgroundColor,
           child: Row(

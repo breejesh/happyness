@@ -14,7 +14,7 @@ class NewsWidget extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.only(left: 5.0, right: 5.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -41,10 +41,13 @@ class NewsWidget extends StatelessWidget {
             Spacer(),
             Expanded(
               flex: 9,
-              child: Text(
-                this.newsArticle.body,
-                style: Theme.of(context).textTheme.subtitle1,
-                textAlign: TextAlign.justify,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                child: Text(
+                  this.newsArticle.body,
+                  style: Theme.of(context).textTheme.subtitle1,
+                  textAlign: TextAlign.justify,
+                ),
               ),
             ),
             Expanded(
