@@ -39,3 +39,8 @@ lib/generated_plugin_registrant.dart
 google-services.json
 happyness-python-firebase.json
 pubspec.lock
+
+# iOS Specific
+ios/Flutter/Debug.xcconfig
+ios/Flutter/Release.xcconfig
+ios/Podfile
