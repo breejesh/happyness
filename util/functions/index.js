@@ -12,10 +12,14 @@ exports.new_news_notification = functions.firestore.document('news/{id}').onCrea
     var payload = {
         notification: {
           title: 'Happyness is here!',
-          body: news_data.title,
+          body: news_data.title
+        },
+        data: {
           sound: 'default',
           badge: '1',
-          tag: 'news'
+          tag: 'news',
+          click_action: 'FLUTTER_NOTIFICATION_CLICK',
+          icon: 'ic_notification'
         },
     };
 
