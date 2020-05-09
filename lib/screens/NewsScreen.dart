@@ -72,8 +72,8 @@ class _NewsScreenState extends State<NewsScreen> {
                 curve: Curves.linear,
                 overlayColor: Colors.black,
                 overlayOpacity: 0.4,
-                onOpen: () => print('OPENING DIAL'),
-                onClose: () => print('DIAL CLOSED'),
+                onOpen: () => log('OPENING DIAL'),
+                onClose: () => log('DIAL CLOSED'),
                 tooltip: 'Speed Dial',
                 heroTag: 'speed-dial-hero-tag',
                 elevation: 8.0,
@@ -152,27 +152,27 @@ class _NewsScreenState extends State<NewsScreen> {
 
   void firebaseCloudMessagingListeners() {
     _firebaseMessaging.getToken().then((token) {
-      print(token);
+      log(token);
     });
 
     _firebaseMessaging.subscribeToTopic("new_news_notification");
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
+        log('on message $message');
       },
       onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
+        log('on resume $message');
         // Reload messages on resume
         this.getArticlesFromFirestore().then((data) => setState(() {
               this.newsArticles = data.reversed.toList();
               log(this.newsArticles.toString());
+              // Redraw swiper on resume to go to top article
+              redraw();
             }));
-        // Redraw swiper on resume to go to top article
-        redraw();
       },
       onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
+        log('on launch $message');
       },
     );
   }
@@ -184,7 +184,7 @@ class _NewsScreenState extends State<NewsScreen> {
       _showSwiper = !_showSwiper;
       // showSomeAnimation
       // Use some callback instead of delay
-      Future.delayed(const Duration(milliseconds: 20), () {
+      Future.delayed(const Duration(milliseconds: 50), () {
         setState(() {
           log('Showing Swiper');
           _showSwiper = !_showSwiper;
@@ -211,7 +211,7 @@ class _NewsScreenState extends State<NewsScreen> {
           pngBytes, 'image/png',
           text: 'Download Happyness App for more: https://www.google.com');
     } catch (e) {
-      print('error: $e');
+      log('error: $e');
     }
   }
 
