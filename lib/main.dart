@@ -1,4 +1,4 @@
-import 'package:happyness/screens/SigninScreen.dart';
+import 'package:happyness/screens/NewsScreen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.black,
           textTheme: Typography.whiteCupertino,
           secondaryHeaderColor: Colors.white12),
-      home: SigninScreen(),
+      home: NewsScreen(),
     );
   }
 }
