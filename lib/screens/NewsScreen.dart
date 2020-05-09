@@ -140,13 +140,9 @@ class _NewsScreenState extends State<NewsScreen> {
     super.initState();
     firebaseCloudMessagingListeners();
     this.getArticlesFromFirestore().then((data) => setState(() {
-          this.newsArticles = data;
+          this.newsArticles = data.reversed.toList();
           log(this.newsArticles.toString());
         }));
-
-    // endLoadingAfterDelay(3).then((_) => setState(() {
-    //       this.newsArticles = staticNewsArticles;
-    //     }));
   }
 
   Future endLoadingAfterDelay(int delayInSeconds) async {
@@ -167,6 +163,13 @@ class _NewsScreenState extends State<NewsScreen> {
       },
       onResume: (Map<String, dynamic> message) async {
         print('on resume $message');
+        // Reload messages on resume
+        this.getArticlesFromFirestore().then((data) => setState(() {
+              this.newsArticles = data.reversed.toList();
+              log(this.newsArticles.toString());
+            }));
+        // Redraw swiper on resume to go to top article
+        redraw();
       },
       onLaunch: (Map<String, dynamic> message) async {
         print('on launch $message');
