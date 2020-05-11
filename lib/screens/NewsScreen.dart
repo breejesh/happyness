@@ -31,27 +31,31 @@ class _NewsScreenState extends State<NewsScreen> {
   Widget build(BuildContext context) {
     if (newsArticles.length == 0) {
       return Scaffold(
-        body: Container(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image(
-                    image: AssetImage('assets/images/happyness_logo.png'),
-                    height: 160,
+        backgroundColor: Colors.black,
+        body: SafeArea(
+          child: Container(
+            color: Theme.of(context).backgroundColor,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Image(
+                      image: AssetImage('assets/images/happyness_logo.png'),
+                      height: 160,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Loading(
-                    indicator: LineScaleIndicator(),
-                    size: 80,
-                    color: Theme.of(context).primaryColor,
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Loading(
+                      indicator: LineScaleIndicator(),
+                      size: 80,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -115,10 +119,8 @@ class _NewsScreenState extends State<NewsScreen> {
               child: _showSwiper
                   ? Swiper(
                       itemBuilder: (BuildContext context, int index) {
-                        return new NewsWrapperWidget(
-                          newsArticles[index],
-                          toggleFloatingButton,
-                        );
+                        return new NewsWrapperWidget(newsArticles[index],
+                            showFloatingButton, hideFloatingButton);
                       },
                       loop: false,
                       scrollDirection: Axis.vertical,
@@ -193,9 +195,15 @@ class _NewsScreenState extends State<NewsScreen> {
     });
   }
 
-  void toggleFloatingButton() {
+  void showFloatingButton() {
     setState(() {
-      _showFloatingButton = !_showFloatingButton;
+      _showFloatingButton = true;
+    });
+  }
+
+  void hideFloatingButton() {
+    setState(() {
+      _showFloatingButton = false;
     });
   }
 

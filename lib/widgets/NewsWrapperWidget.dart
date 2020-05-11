@@ -12,8 +12,11 @@ WebViewController webControllerGlobal;
 
 class NewsWrapperWidget extends StatelessWidget {
   final NewsArticle newsArticle;
-  final VoidCallback toggleFloatingButton;
-  NewsWrapperWidget(this.newsArticle, this.toggleFloatingButton, {Key key})
+  final VoidCallback showFloatingButton;
+  final VoidCallback hideFloatingButton;
+  NewsWrapperWidget(
+      this.newsArticle, this.showFloatingButton, this.hideFloatingButton,
+      {Key key})
       : super(key: key);
 
   @override
@@ -34,9 +37,17 @@ class NewsWrapperWidget extends StatelessWidget {
       return false;
     }
 
+    void handlePageChange(int pageNum) {
+      if (pageNum == 0) {
+        this.showFloatingButton();
+      } else {
+        this.hideFloatingButton();
+      }
+    }
+
     return PageView(
       controller: _pageController,
-      onPageChanged: (int pageNum) => toggleFloatingButton(),
+      onPageChanged: handlePageChange,
       scrollDirection: Axis.horizontal,
       children: <Widget>[
         NewsWidget(newsArticle),
@@ -44,8 +55,12 @@ class NewsWrapperWidget extends StatelessWidget {
           color: Theme.of(context).backgroundColor,
           child: Column(
             children: [
-              NavigationControls(_webController.future, _pageController,
-                  newsArticle.sourceUrl),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onVerticalDragUpdate: (dragUpdateDetails) {},
+                child: NavigationControls(_webController.future,
+                    _pageController, newsArticle.sourceUrl),
+              ),
               Expanded(
                 child: WillPopScope(
                   onWillPop: _onBack,
