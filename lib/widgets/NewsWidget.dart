@@ -26,16 +26,26 @@ class NewsWidget extends StatelessWidget {
             Spacer(),
             Expanded(
               flex: 10,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(24.0)),
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: this.newsArticle.imageUrl != null
-                        ? NetworkImage(this.newsArticle.imageUrl)
-                        : AssetImage('assets/images/AltoAdventure.png'),
+              child: Stack(
+                children: <Widget>[
+                  Center(
+                      child: Text(
+                      'Loading...',
+                      style: Theme.of(context).textTheme.caption,
+                    ),
                   ),
-                ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(24.0)),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: this.newsArticle.imageUrl != null
+                            ? NetworkImage(this.newsArticle.imageUrl)
+                            : AssetImage('assets/images/AltoAdventure.png'),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             Spacer(),
