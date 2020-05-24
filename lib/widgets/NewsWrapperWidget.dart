@@ -10,14 +10,22 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 WebViewController webControllerGlobal;
 
-class NewsWrapperWidget extends StatelessWidget {
+class NewsWrapperWidget extends StatefulWidget {
   final NewsArticle newsArticle;
   final VoidCallback showFloatingButton;
   final VoidCallback hideFloatingButton;
+
   NewsWrapperWidget(
       this.newsArticle, this.showFloatingButton, this.hideFloatingButton,
       {Key key})
       : super(key: key);
+
+  @override
+  _NewsWrapperWidgetState createState() => _NewsWrapperWidgetState();
+}
+
+class _NewsWrapperWidgetState extends State<NewsWrapperWidget> {
+  bool webviewCanCreate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +45,19 @@ class NewsWrapperWidget extends StatelessWidget {
       return false;
     }
 
+    void webViewSetState(bool state) {
+      setState(() {
+        webviewCanCreate = state;
+      });
+    }
+
     void handlePageChange(int pageNum) {
       if (pageNum == 0) {
-        this.showFloatingButton();
+        webViewSetState(false);
+        this.widget.showFloatingButton();
       } else {
-        this.hideFloatingButton();
+        webViewSetState(true);
+        this.widget.hideFloatingButton();
       }
     }
 
@@ -50,36 +66,43 @@ class NewsWrapperWidget extends StatelessWidget {
       onPageChanged: handlePageChange,
       scrollDirection: Axis.horizontal,
       children: <Widget>[
-        NewsWidget(newsArticle),
-        Container(
-          color: Theme.of(context).backgroundColor,
-          child: Column(
-            children: [
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onVerticalDragUpdate: (dragUpdateDetails) {},
-                child: NavigationControls(_webController.future,
-                    _pageController, newsArticle.sourceUrl),
-              ),
-              Expanded(
-                child: WillPopScope(
-                  onWillPop: _onBack,
-                  child: WebView(
-                    javascriptMode: JavascriptMode.unrestricted,
-                    initialUrl: newsArticle.sourceUrl,
-                    onWebViewCreated: (WebViewController webViewController) {
-                      _webController.complete(webViewController);
-                    },
-                    gestureRecognizers: [
-                      Factory(() =>
-                          PlatformViewVerticalGestureRecognizer()), // Fix for webview and swiper gesture priority
-                    ].toSet(),
-                  ),
+        NewsWidget(widget.newsArticle),
+        webviewCanCreate
+            ? Container(
+                color: Theme.of(context).backgroundColor,
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onVerticalDragUpdate: (dragUpdateDetails) {},
+                      child: NavigationControls(_webController.future,
+                          _pageController, widget.newsArticle.sourceUrl),
+                    ),
+                    Expanded(
+                      child: WillPopScope(
+                        onWillPop: _onBack,
+                        child: WebView(
+                          javascriptMode: JavascriptMode.unrestricted,
+                          initialUrl: widget.newsArticle.sourceUrl,
+                          onWebViewCreated:
+                              (WebViewController webViewController) {
+                            if (_webController.isCompleted) {
+                              print("Already complete");
+                            } else {
+                              _webController.complete(webViewController);
+                            }
+                          },
+                          gestureRecognizers: [
+                            Factory(() =>
+                                PlatformViewVerticalGestureRecognizer()), // Fix for webview and swiper gesture priority
+                          ].toSet(),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-        ),
+              )
+            : Container(color: Theme.of(context).backgroundColor),
       ],
     );
   }
